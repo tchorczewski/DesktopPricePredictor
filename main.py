@@ -46,5 +46,5 @@ dataset['item_description'] = dataset['item_description'].apply(remove_stop_word
 tfidf = sklearn.feature_extraction.text.TfidfVectorizer(ngram_range=(1,2), max_features=50000)
 tfidf.fit(dataset['item_description'])
 tfidf_vec = tfidf.transform(dataset['item_description'])
+print(tfidf_vec.shape)
 
-print(sklearn.metrics.classification_report(tfidf_vec))
