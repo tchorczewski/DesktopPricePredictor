@@ -50,7 +50,7 @@ dataset['category_name'][dataset['category_name'].isnull()] = "missing"
 dataset['category_name'] = dataset['category_name'].apply(category_name_decontraction)
 dataset['category_name'] = dataset['category_name'].apply(category_name_preprocessing)
 #Splitting the category name column into three levels using lambda is faster than for loop
-dataset['Tier_1'] = dataset['category_name'].apply(lambda x:   x.split("/")[0] if len(x.split("/"))>=1 else "missing")
+dataset['Tier_1'] = dataset['category_name'].apply(lambda x:    x.split("/")[0] if len(x.split("/"))>=1 else "missing")
 dataset["Tier_2"] = dataset['category_name'].apply(lambda x:    x.split("/")[1] if len(x.split("/"))>1 else "missing")
 dataset["Tier_3"] = dataset['category_name'].apply(lambda x:    x.split("/")[2] if len(x.split("/"))>1 else "missing")
 
