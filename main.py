@@ -9,7 +9,6 @@ import nltk
 dataset = pd.read_table("C:/Users/Bartek/Desktop/Datasets/train.tsv")
 english_stop_words = nltk.corpus.stopwords.words('english')
 
-
 # Data preprocessing methods
 def description_preprocessing(text):
     text = re.sub("[^A-Za-z0-9 ]", "", str(text))
@@ -55,7 +54,7 @@ dataset["Tier_2"] = dataset['category_name'].apply(lambda x:    x.split("/")[1] 
 dataset["Tier_3"] = dataset['category_name'].apply(lambda x:    x.split("/")[2] if len(x.split("/"))>1 else "missing")
 
 #Removing brand_name from name
-print(dataset['name'].head(10))
+print(dataset['Tier_1'].head(10))
 
 # Applying text preprocessing
 #dataset['item_description'] = dataset['item_description'].apply(decontraction)
