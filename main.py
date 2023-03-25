@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as num
 import matplotlib.pyplot as plt
 import nltk
+from sklearn.preprocessing import OneHotEncoder
 
 # Prepare dataset
 dataset = pd.read_table("C:/Users/Bartek/Desktop/Datasets/train.tsv")
@@ -48,21 +49,41 @@ def decontraction(phrase):
 dataset['category_name'][dataset['category_name'].isnull()] = "missing"
 dataset['category_name'] = dataset['category_name'].apply(category_name_decontraction)
 dataset['category_name'] = dataset['category_name'].apply(category_name_preprocessing)
-#Splitting the category name column into three levels using lambda is faster than for loop
+#Splitting the category name column into three levels
 dataset['Tier_1'] = dataset['category_name'].apply(lambda x:    x.split("/")[0] if len(x.split("/"))>=1 else "missing")
 dataset["Tier_2"] = dataset['category_name'].apply(lambda x:    x.split("/")[1] if len(x.split("/"))>1 else "missing")
 dataset["Tier_3"] = dataset['category_name'].apply(lambda x:    x.split("/")[2] if len(x.split("/"))>1 else "missing")
 
-#Removing brand_name from name
-print(dataset['Tier_1'].head(10))
+#Preprocessing brand_name
+dataset['brand_name'] = dataset['brand_name'].apply(description_preprocessing)
+#Preprocessing name
 
-# Applying text preprocessing
+#Removing contents of column1 from coulumn2
+#def remove_name_from_brand_name(row):
+#    return str(row['name']).replace(str(row['brand_name']),'')
+
+#dataset['name'] = dataset.apply(remove_name_from_brand_name, axis=1)
+
+
+# Applying text preprocessing to item description
 #dataset['item_description'] = dataset['item_description'].apply(decontraction)
 
 #dataset['item_description'] = dataset['item_description'].apply(description_preprocessing)
 
 #dataset['item_description'] = dataset['item_description'].apply(remove_stop_words)
 
+#Applying TfIdf to item description
 #tfidf = sklearn.feature_extraction.text.TfidfVectorizer(ngram_range=(1, 2), max_features=50000)
 #tfidf_vec = tfidf.fit_transform(dataset['item_description'])
-#def preprocess_categories(text):
+
+
+#Applying One Hot Encoding to item_condition_id, category_name(in different tiers), brand_name, shipping
+encoded_category_tier1 = OneHotEncoder( handle_unknown='ignore')
+encoded_category_tier1 = encoded_category_tier1.fit_transform(dataset['Tier_1'].values.reshape(1,-1))  #Reshaping the data to turn it into 2d array
+
+encoded_category_tier2 = OneHotEncoder( handle_unknown='ignore')
+encoded_category_tier2 = encoded_category_tier2.fit_transform(dataset['Tier_2'].values.reshape(1,-1))
+
+encoded_category_tier3 = OneHotEncoder( handle_unknown='ignore')
+encoded_category_tier3 = encoded_category_tier3.fit_transform(dataset['Tier_3'].values.reshape(1,-1))
+
