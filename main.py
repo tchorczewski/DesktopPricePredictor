@@ -11,7 +11,7 @@ dataset = pd.read_table("C:/Users/Bartek/Desktop/Datasets/train.tsv")
 english_stop_words = nltk.corpus.stopwords.words('english')
 
 # Data preprocessing methods
-def description_preprocessing(text):
+def text_preprocessing(text):
     text = re.sub("[^A-Za-z0-9 ]", "", str(text))
     text = str(text).lower()
     return text
@@ -55,9 +55,11 @@ dataset["Tier_2"] = dataset['category_name'].apply(lambda x:    x.split("/")[1] 
 dataset["Tier_3"] = dataset['category_name'].apply(lambda x:    x.split("/")[2] if len(x.split("/"))>1 else "missing")
 
 #Preprocessing brand_name
-dataset['brand_name'] = dataset['brand_name'].apply(description_preprocessing)
-#Preprocessing name
+dataset['brand_name'] = dataset['brand_name'].apply(text_preprocessing)
 
+#Preprocessing name
+dataset['name'] = dataset['name'].apply(text_preprocessing)
+dataset['name'] = dataset['name'].apply(remove_stop_words)
 #Removing contents of column1 from coulumn2
 #def remove_name_from_brand_name(row):
 #    return str(row['name']).replace(str(row['brand_name']),'')
@@ -66,16 +68,19 @@ dataset['brand_name'] = dataset['brand_name'].apply(description_preprocessing)
 
 
 # Applying text preprocessing to item description
-#dataset['item_description'] = dataset['item_description'].apply(decontraction)
+dataset['item_description'] = dataset['item_description'].apply(decontraction)
 
-#dataset['item_description'] = dataset['item_description'].apply(description_preprocessing)
+dataset['item_description'] = dataset['item_description'].apply(text_preprocessing)
 
-#dataset['item_description'] = dataset['item_description'].apply(remove_stop_words)
+dataset['item_description'] = dataset['item_description'].apply(remove_stop_words)
 
 #Applying TfIdf to item description
-#tfidf = sklearn.feature_extraction.text.TfidfVectorizer(ngram_range=(1, 2), max_features=50000)
-#tfidf_vec = tfidf.fit_transform(dataset['item_description'])
+tfidf_description = sklearn.feature_extraction.text.TfidfVectorizer(ngram_range=(1, 2), max_features=50000)
+tfidf_vec_description = tfidf_description.fit_transform(dataset['item_description'])
 
+#Applying TfIdf to name
+tfidf_name = sklearn.feature_extraction.text.TfidfVectorizer(ngram_range=(1,2), max_features=50000)
+tfidf_vec_name = tfidf_name.fit_transform(dataset['name'])
 
 #Applying One Hot Encoding to item_condition_id, category_name(in different tiers), brand_name, shipping
 encoded_category_tier1 = OneHotEncoder( handle_unknown='ignore')
@@ -86,4 +91,13 @@ encoded_category_tier2 = encoded_category_tier2.fit_transform(dataset['Tier_2'].
 
 encoded_category_tier3 = OneHotEncoder( handle_unknown='ignore')
 encoded_category_tier3 = encoded_category_tier3.fit_transform(dataset['Tier_3'].values.reshape(1,-1))
+
+encoded_shipping = OneHotEncoder()
+encoded_shipping = encoded_shipping.fit_transform(dataset['shipping'].values.reshape(-1,1))
+
+encoded_item_condition = OneHotEncoder()
+encoded_item_condition = encoded_shipping.fit_transform(dataset['item_condition_id'].values.reshape(-1,1))
+
+
+
 
