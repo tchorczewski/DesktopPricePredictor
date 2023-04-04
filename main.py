@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import nltk
 from sklearn.preprocessing import OneHotEncoder
 from scipy.sparse import hstack #Stackowanie matryc rzadkich pionowo
+from sklearn.metrics import mean_squared_error
 
 # Prepare dataset
 dataset = pd.read_table("C:/Users/Bartek/Desktop/Datasets/train.tsv")
@@ -111,11 +112,13 @@ final_vector = hstack((tfidf_vec_name, tfidf_vec_description,
                           encoded_item_condition,
                            encoded_brand_name, encoded_shipping))
 
-
+print("Rozpoczynam tworzenie modelu Regresji liniowej")
 linear_regression = sklearn.linear_model.LinearRegression()
 y_train = dataset.price
 linear_regression.fit(final_vector, y_train)
+print("Rozpoczynam predykcje")
+linear_regression_predictions = linear_regression.predict(final_vector)
 
-linear_regression.predict(dataset.price)
+train_error = np.sqrt(mean_squared_error(y_train,linear_regression_predictions)) #Calculating RMSLE of Linear Regression model
 
 
