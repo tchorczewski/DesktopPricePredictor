@@ -120,5 +120,6 @@ print("Rozpoczynam predykcje")
 linear_regression_predictions = linear_regression.predict(final_vector)
 
 train_error = np.sqrt(mean_squared_error(y_train,linear_regression_predictions)) #Calculating RMSLE of Linear Regression model
+print(train_error)
 
 
