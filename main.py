@@ -12,6 +12,7 @@ from sklearn.metrics import mean_squared_error
 
 # Prepare dataset
 dataset = pd.read_table("C:/Users/Bartek/Desktop/Datasets/train.tsv")
+dataset["log_price"] = dataset.price.apply(lambda x:np.log(x+1))
 english_stop_words = nltk.corpus.stopwords.words('english')
 
 # Data preprocessing methods
@@ -81,45 +82,53 @@ dataset['item_description'] = dataset.item_description.apply(remove_stop_words)
 #Applying TfIdf to item description
 tfidf_description = sklearn.feature_extraction.text.TfidfVectorizer(ngram_range=(1, 2), max_features=50000)
 tfidf_vec_description = tfidf_description.fit_transform(dataset.item_description)
-print(tfidf_vec_description.shape)
+
 
 #Applying TfIdf to name
 tfidf_name = sklearn.feature_extraction.text.TfidfVectorizer(ngram_range=(1,2), max_features=50000)
 tfidf_vec_name = tfidf_name.fit_transform(dataset.name)
-print(tfidf_vec_name.shape)
+
 #Applying One Hot Encoding to item_condition_id, category_name(in different tiers), brand_name, shipping
 encoded_category_tier1 = OneHotEncoder( handle_unknown='ignore')
 encoded_category_tier1 = encoded_category_tier1.fit_transform(dataset.Tier_1.values.reshape(-1,1))  #Reshaping the data to turn it into 2d array
-print(encoded_category_tier1.shape)
+
 encoded_category_tier2 = OneHotEncoder( handle_unknown='ignore')
 encoded_category_tier2 = encoded_category_tier2.fit_transform(dataset.Tier_2.values.reshape(-1,1))
-print(encoded_category_tier2.shape)
+
 encoded_category_tier3 = OneHotEncoder( handle_unknown='ignore')
 encoded_category_tier3 = encoded_category_tier3.fit_transform(dataset.Tier_3.values.reshape(-1,1))
-print(encoded_category_tier3.shape)
+
 encoded_shipping = OneHotEncoder()
 encoded_shipping = encoded_shipping.fit_transform(dataset.shipping.values.reshape(-1,1))
-print(encoded_shipping.shape)
+
 encoded_item_condition = OneHotEncoder()
 encoded_item_condition = encoded_item_condition.fit_transform(dataset.item_condition_id.values.reshape(-1,1))
-print(encoded_item_condition.shape)
+
 encoded_brand_name = OneHotEncoder()
 encoded_brand_name = encoded_brand_name.fit_transform(dataset.brand_name.values.reshape(-1,1))
-print(encoded_brand_name.shape)
+
 
 final_vector = hstack((tfidf_vec_name, tfidf_vec_description,
                           encoded_category_tier1,encoded_category_tier2, encoded_category_tier3,
                           encoded_item_condition,
                            encoded_brand_name, encoded_shipping))
 
+def log_to_actual(log):
+    return np.exp(log)-1
+
 print("Rozpoczynam tworzenie modelu Regresji liniowej")
 linear_regression = sklearn.linear_model.LinearRegression()
-y_train = dataset.price
+y_train = dataset.log_price
 linear_regression.fit(final_vector, y_train)
 print("Rozpoczynam predykcje")
 linear_regression_predictions = linear_regression.predict(final_vector)
 
 train_error = np.sqrt(mean_squared_error(y_train,linear_regression_predictions)) #Calculating RMSLE of Linear Regression model
-print(train_error)
+print("Błąd danych treningowych:", train_error)
 
+linear_regression_df = pd.DataFrame()
+linear_regression_df["ID_test"] = dataset.index
+linear_regression_df["price"] = log_to_actual(linear_regression.predict(final_vector))
+linear_regression_df.to_csv("C:/Users/Bartek/Desktop/test_predictions.csv")
 
+print(linear_regression_df.head(20))
