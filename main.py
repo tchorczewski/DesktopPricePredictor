@@ -1,20 +1,23 @@
 import re
-
 import numpy as np
 import sklearn
 import pandas as pd
-import numpy as num
-import matplotlib.pyplot as plt
 import nltk
 from sklearn.preprocessing import OneHotEncoder
 from scipy.sparse import hstack #Stackowanie matryc rzadkich pionowo
-from sklearn.metrics import mean_squared_error
+from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.tree import DecisionTreeRegressor
+
+
+#SequentialFeatureSelector zrobić
 
 # Prepare dataset
 dataset = pd.read_table("C:/Users/Bartek/Desktop/Datasets/train.tsv")
 dataset["log_price"] = dataset.price.apply(lambda x:np.log(x+1))
 english_stop_words = nltk.corpus.stopwords.words('english')
 dataframe_train, dataframe_validation = sklearn.model_selection.train_test_split(dataset, test_size=0.3, random_state=3)
+
+print(dataset['log_price'].describe())
 
 dataframe_test = pd.read_table("C:/Users/Bartek/Desktop/Datasets/test.tsv")
 
@@ -76,6 +79,7 @@ dataframe_train['Tier_3'] = dataframe_train.category_name.apply(lambda x:    x.s
 dataframe_validation['Tier_1'] = dataframe_validation.category_name.apply(lambda x:    x.split("/")[0] if len(x.split("/"))>=1 else "missing")
 dataframe_validation['Tier_2'] = dataframe_validation.category_name.apply(lambda x:    x.split("/")[1] if len(x.split("/"))>1 else "missing")
 dataframe_validation['Tier_3'] = dataframe_validation.category_name.apply(lambda x:    x.split("/")[2] if len(x.split("/"))>1 else "missing")
+
 dataframe_test['Tier_1'] = dataframe_test.category_name.apply(lambda x:    x.split("/")[0] if len(x.split("/"))>1 else "missing")
 dataframe_test['Tier_2'] = dataframe_test.category_name.apply(lambda x:    x.split("/")[1] if len(x.split("/"))>1 else "missing")
 dataframe_test['Tier_3'] = dataframe_test.category_name.apply(lambda x:    x.split("/")[2] if len(x.split("/"))>1 else "missing")
@@ -92,12 +96,6 @@ dataframe_validation['name'] = dataframe_validation.name.apply(text_preprocessin
 dataframe_validation['name'] = dataframe_validation.name.apply(remove_stop_words)
 dataframe_test['name'] = dataframe_test.name.apply(text_preprocessing)
 dataframe_test['name'] = dataframe_test.name.apply(remove_stop_words)
-#Removing contents of column1 from coulumn2
-#def remove_name_from_brand_name(row):
-#    return str(row['name']).replace(str(row['brand_name']),'')
-
-#dataset['name'] = dataset.apply(remove_name_from_brand_name, axis=1)
-
 
 # Applying text preprocessing to item description
 dataframe_train['item_description'] = dataframe_train.item_description.apply(decontraction)
@@ -204,8 +202,6 @@ final_test_vector = hstack((tfidf_vec_test_name, tfidf_vec_test_description,
                           test_encoded_item_condition,
                            test_encoded_brand_name, test_encoded_shipping))
 
-
-
 print(final_train_vector.shape)
 print(final_validation_vector.shape)
 print(final_test_vector.shape)
@@ -227,12 +223,34 @@ linear_regression_validation_predictions = linear_regression.predict(final_valid
 train_error = np.sqrt(mean_squared_error(y_train,linear_regression_train_predictions)) #Calculating RMSLE of Linear Regression model
 print("Błąd danych treningowych:", train_error)
 
+r2train = r2_score(y_train, linear_regression_train_predictions)
+print("Wynik r2:", r2train)
+
 validation_error = np.sqrt(mean_squared_error(y_validation, linear_regression_validation_predictions))
 print("Błąd danych walidacyjnych:", validation_error)
 
 linear_regression_df = pd.DataFrame()
 linear_regression_df["ID_test"] = dataframe_test.index
 linear_regression_df["price"] = log_to_actual(linear_regression.predict(final_test_vector))
-linear_regression_df.to_csv("C:/Users/Bartek/Desktop/test_predictions.csv")
+#linear_regression_df.to_csv("C:/Users/Bartek/Desktop/test_predictions.csv")
 
 print(linear_regression_df.head(20))
+
+#Model drzewa decyzyjnego - regresyjnego
+decision_tree_regressor = DecisionTreeRegressor()
+decision_tree_regressor.fit(final_train_vector, y_train)
+print("Tworzenie modelu testowego")
+train_prediction_regression = decision_tree_regressor.predict(final_train_vector, y_train)
+print("Tworzenie modelu walidacyjnego")
+validation_prediction_regression = decision_tree_regressor.predict(final_validation_vector, y_validation)
+
+regression_tree_train_error = np.sqrt(mean_squared_error(y_train,train_prediction_regression))
+print("Błąd modelu treningowego:", regression_tree_train_error)
+
+regression_tree_validation_error = np.sqrt(mean_squared_error(y_train,validation_prediction_regression))
+print("Błąd modelu treningowego:", regression_tree_validation_error)
+
+tree_regression_df = pd.DataFrame()
+tree_regression_df["Id_test"] = dataframe_test.index
+tree_regression_df["price"] = log_to_actual(decision_tree_regressor.predict(final_test_vector))
+print(tree_regression_df.head(20))
