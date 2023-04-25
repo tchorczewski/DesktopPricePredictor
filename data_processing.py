@@ -1,15 +1,7 @@
 import re
 import numpy as np
-import sklearn
 import pandas as pd
 import nltk
-from sklearn.preprocessing import OneHotEncoder
-from scipy.sparse import hstack #Stackowanie matryc rzadkich pionowo
-from sklearn.metrics import mean_squared_error, r2_score
-from sklearn.tree import DecisionTreeRegressor
-
-
-#SequentialFeatureSelector zrobić
 
 # Prepare
 dataset = pd.read_table("C:/Users/Bartek/Desktop/datasets/train.tsv")
