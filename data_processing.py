@@ -60,32 +60,32 @@ def decontraction(phrase):
     return phrase
 
 #Preprocessing category name column
-#dataset['category_name'][dataset.category_name.isnull()] = "missing"
-#dataset['brand_name'][dataset.brand_name.isnull()] = "missing"
-#dataset['name'][dataset.name.isnull()] = "missing"
-#dataset['item_condition_id'][dataset.item_condition_id.isnull()] = "missing"
+dataset['category_name'][dataset.category_name.isnull()] = "missing"
+dataset['brand_name'][dataset.brand_name.isnull()] = "missing"
+dataset['name'][dataset.name.isnull()] = "missing"
+dataset['item_condition_id'][dataset.item_condition_id.isnull()] = "missing"
 
-#dataset['category_name'] = dataset.category_name.apply(text_stemmer)
-#dataset['category_name'] = dataset.category_name.apply(category_name_decontraction)
+dataset['category_name'] = dataset.category_name.apply(text_stemmer)
+dataset['category_name'] = dataset.category_name.apply(category_name_decontraction)
 
 
 #Splitting the category name column into three levels
-#dataset['Tier_1'] = dataset.category_name.apply(lambda x:    x.split("/")[0] if len(x.split("/"))>=1 else "missing")
-#dataset['Tier_2'] = dataset.category_name.apply(lambda x:    x.split("/")[1] if len(x.split("/"))>1 else "missing")
-#dataset['Tier_3'] = dataset.category_name.apply(lambda x:    x.split("/")[2] if len(x.split("/"))>1 else "missing")
+dataset['Tier_1'] = dataset.category_name.apply(lambda x:    x.split("/")[0] if len(x.split("/"))>=1 else "missing")
+dataset['Tier_2'] = dataset.category_name.apply(lambda x:    x.split("/")[1] if len(x.split("/"))>1 else "missing")
+dataset['Tier_3'] = dataset.category_name.apply(lambda x:    x.split("/")[2] if len(x.split("/"))>2 else "missing")
 
 #Preprocessing brand_name
-#dataset['brand_name'] = dataset.brand_name.apply(text_preprocessing)
+dataset['brand_name'] = dataset.brand_name.apply(text_preprocessing)
 
 #Preprocessing name
-#dataset['name'] = dataset.name.apply(text_preprocessing)
-#dataset['name'] = dataset.name.apply(remove_stop_words)
+dataset['name'] = dataset.name.apply(text_preprocessing)
+dataset['name'] = dataset.name.apply(remove_stop_words)
 
 # Applying text preprocessing to item description
-#dataset['item_description'] = dataset.item_description.apply(decontraction)
-#dataset['item_description'] = dataset.item_description.apply(text_stemmer)
+dataset['item_description'] = dataset.item_description.apply(decontraction)
+dataset['item_description'] = dataset.item_description.apply(text_stemmer)
 dataset['item_description'] = dataset.item_description.apply(remove_stop_words)
-#dataset['item_description'] = dataset.item_description.apply(text_preprocessing)
+dataset['item_description'] = dataset.item_description.apply(text_preprocessing)
 
 
 
