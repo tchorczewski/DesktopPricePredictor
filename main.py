@@ -1,7 +1,6 @@
 import numpy as np
 import sklearn
 import pandas as pd
-from sklearn.feature_selection import SequentialFeatureSelector
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import OneHotEncoder
 from scipy.sparse import hstack  # Stackowanie matryc rzadkich pionowo
@@ -19,12 +18,12 @@ print("Current Time =", current_time)
 dataset = pd.read_csv("C:/Users/Bartek/Desktop/Datasets/processed_train_dataset.csv")
 
 # Applying TfIdf to item description
-tfidf_description = TfidfVectorizer(ngram_range=(1, 2), max_features=5000)
+tfidf_description = TfidfVectorizer(ngram_range=(1, 2), max_features=10000)
 tfidf_vec_description = tfidf_description.fit_transform(dataset.item_description.values.astype('U'))
 print(tfidf_vec_description.shape)
 
 # Applying TfIdf to name
-tfidf_name = TfidfVectorizer(ngram_range=(1, 2), max_features=5000)
+tfidf_name = TfidfVectorizer(ngram_range=(1, 2), max_features=10000)
 tfidf_vec_name = tfidf_name.fit_transform(dataset.name.values.astype('U'))
 
 encoded_category_tier1 = OneHotEncoder(handle_unknown='ignore')
