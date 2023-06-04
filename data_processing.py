@@ -16,6 +16,7 @@ dataframe_test = pd.read_table("C:/Users/Bartek/Desktop/datasets/test.tsv")
 
 
 def text_stemmer(text):
+    stemmer = PorterStemmer()
     tokens = word_tokenize(text)  # Tokenize the text into individual words
     stemmed_tokens = [stemmer.stem(word) for word in tokens]  # Perform stemming on each word  #poprawiono przetwarzanie tekstu i danych wejściowych
     return ' '.join(stemmed_tokens)  # Join the stemmed tokens back into a single text
@@ -37,10 +38,6 @@ def remove_stop_words(text):
         return ' '.join(filtered_tokens)
     else:
         return text
-
-def category_name_decontraction(phrase):
-    phrase = re.sub(r"s/b", "", str(phrase)) #usuwamy każde s #poprawione
-    return phrase
 
 def decontraction(phrase):
     # specific words
@@ -66,7 +63,6 @@ dataset['name'][dataset.name.isnull()] = "missing"
 dataset['item_condition_id'][dataset.item_condition_id.isnull()] = "missing"
 
 dataset['category_name'] = dataset.category_name.apply(text_stemmer)
-dataset['category_name'] = dataset.category_name.apply(category_name_decontraction)
 
 
 #Splitting the category name column into three levels
