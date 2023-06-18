@@ -11,7 +11,6 @@ dataset["log_price"] = dataset.price.apply(lambda x:np.log(x+1))
 english_stop_words = nltk.corpus.stopwords.words('english')
 #nltk.download('punkt')
 stemmer = PorterStemmer()
-dataframe_test = pd.read_table("C:/Users/Bartek/Desktop/datasets/test.tsv")
 
 
 

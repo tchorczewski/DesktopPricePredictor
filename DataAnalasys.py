@@ -3,9 +3,9 @@ import matplotlib.pyplot as plt
 import seaborn as snp
 import numpy as np
 
-
+plt.rcParams['font.size'] = 30
 pandas.set_option('display.float_format', '{:.2f}'.format)
-df = pandas.read_csv("train.tsv", sep='\t')
+df = pandas.read_csv("C:/Users/Bartek/Desktop/datasets/train.tsv", sep='\t')
 df['brand_name'][df.brand_name.isnull()] = "missing"
 print(df.columns)
 print(df.shape)
@@ -53,28 +53,33 @@ print(df.item_condition_id.value_counts().values)
 plt.figure(figsize=(20,15))
 snp.barplot(x=df.item_condition_id.value_counts().index, y=df.item_condition_id.value_counts().values)
 plt.xlabel("Item_Condition_ID")
+plt.title("item_condition distribution")
 plt.show()
 #Plot the shipping distrubution
 plt.figure(figsize=(20,15))
 snp.barplot(x=df.shipping.value_counts().index, y=df.shipping.value_counts().values)
 plt.xlabel("Shipping")
+plt.title("Shipping distribution")
 plt.show()
 
 #Number of chars in name
 plt.figure(figsize=(20, 15))
 plt.hist(df.name.apply(len), color="green")
 plt.xlabel("Length of name")
+plt.title("Number of chars in name")
 plt.show()
 #Number of words in name
 plt.figure(figsize=(20, 15))
 plt.hist(df.name.apply(lambda x: len(x.split())), color = 'blue')
 plt.xlabel("Number of words in name")
+plt.title("Number of words in item_description")
 plt.show()
 
 #Number of words in item_description
 plt.figure(figsize=(20,15))
 plt.hist(df.item_description.apply(lambda x: len(str(x))), color="blue")
 plt.xlabel("Length of description")
+plt.title("Number of words in item_description")
 plt.show()
 
 #Log price distribution
@@ -83,6 +88,7 @@ plt.hist(df.log_price,bins=30,color="teal")
 plt.title("Log(Price+1) Distribution")
 plt.xlabel("log(Price+1)")
 plt.ylabel("Count")
+plt.title("Log price distribution")
 plt.show()
 
 plt.figure(figsize=(20, 15))
