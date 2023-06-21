@@ -9,10 +9,8 @@ from nltk.tokenize import word_tokenize
 dataset = pd.read_table("C:/Users/Bartek/Desktop/datasets/train.tsv")
 dataset["log_price"] = dataset.price.apply(lambda x:np.log(x+1))
 english_stop_words = nltk.corpus.stopwords.words('english')
-#nltk.download('punkt')
+#nltk.download('punkt') #download necessary packets from nltk library to run porter stemmer
 stemmer = PorterStemmer()
-
-
 
 def text_stemmer(text):
     stemmer = PorterStemmer()
@@ -83,6 +81,4 @@ dataset['item_description'] = dataset.item_description.apply(remove_stop_words)
 dataset['item_description'] = dataset.item_description.apply(text_preprocessing)
 
 
-
-
-dataset.to_csv("C:/Users/Bartek/Desktop/Datasets/processed_train_dataset.csv")
+dataset.to_csv("C:/Users/Bartek/Desktop/Datasets/processed_train_dataset.csv") #Save the processed dataset to file for further use
