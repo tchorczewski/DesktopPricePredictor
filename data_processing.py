@@ -58,9 +58,7 @@ dataset['category_name'][dataset.category_name.isnull()] = "missing"
 dataset['brand_name'][dataset.brand_name.isnull()] = "missing"
 dataset['name'][dataset.name.isnull()] = "missing"
 dataset['item_condition_id'][dataset.item_condition_id.isnull()] = "missing"
-
 dataset['category_name'] = dataset.category_name.apply(text_stemmer)
-
 
 #Splitting the category name column into three levels
 dataset['Tier_1'] = dataset.category_name.apply(lambda x:    x.split("/")[0] if len(x.split("/"))>=1 else "missing")
@@ -79,6 +77,5 @@ dataset['item_description'] = dataset.item_description.apply(decontraction)
 dataset['item_description'] = dataset.item_description.apply(text_stemmer)
 dataset['item_description'] = dataset.item_description.apply(remove_stop_words)
 dataset['item_description'] = dataset.item_description.apply(text_preprocessing)
-
 
 dataset.to_csv("C:/Users/Bartek/Desktop/Datasets/processed_train_dataset.csv") #Save the processed dataset to file for further use

@@ -12,9 +12,6 @@ from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.decomposition import TruncatedSVD
 
-
-
-
 params_dt = {'max_depth': [10, 50, 100, 200]}
 params_lr = {'fit_intercept': [True, False], 'n_jobs':[1,2,-1]}
 
@@ -30,7 +27,6 @@ train_encoded_brand_name = encoded_brand_name.transform(dataset.brand_name.value
 #svd = TruncatedSVD(n_components=100)
 #sparse_feature_transformed = svd.fit_transform(train_encoded_brand_name)
 #print(sparse_feature_transformed.shape)
-
 
 def log_to_actual(log):
     return np.exp(log) - 1

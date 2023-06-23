@@ -17,7 +17,6 @@ print(df.name.describe())
 formatter = ticker.ScalarFormatter()
 formatter.set_scientific(False)
 
-
 print(df['price'].describe().apply("{0:.5f}".format))  # Najważniejsze cechy kolumny Price
 print("Item condition description:", df['item_condition_id'].describe())
 item_counts = df['item_condition_id'].value_counts()
