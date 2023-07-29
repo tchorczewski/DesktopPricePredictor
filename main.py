@@ -159,3 +159,9 @@ seconds = int(total_seconds % 60)
 formatted_time = "{:02d}:{:02d}:{:02d}".format(hours, minutes, seconds)
 # Wydruk wyniku
 print("Czas wykonania trenowania i predykcji dla modelu drzewa regresyjnego: " + formatted_time)
+
+
+
+predict = pd.DataFrame()
+predict['Auction_ID'] = y_validation.index
+predict['price'] = log_to_actual(linear_regression_validation_predictions)
