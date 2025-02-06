@@ -1,1 +1,5 @@
-Code for thesis made by Bartosz Tchorowski for University of Zielona Góra. It contains 3 files: data_processing that was preparing the data for further analasys and creating a machine learning models, DataAnalasys which was used to analyze data and make plots that were helping with the analasys and main file which contained all the code that was used to create machine learning models and that was calculating their performance.
+This project was developed by Bartosz Tchorowski for his thesis at the University of Zielona Góra. It consists of three main files:
+
+data_processing.py – Prepares the data for further analysis and builds machine learning models.
+DataAnalysis.py – Performs data analysis and generates visualizations to support the analytical process.
+main.py – Implements the linear regression, random forest and decision tree models, performs hyperparameter tuning on each of them and compares their performances.
